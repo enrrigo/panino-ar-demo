@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panino in AR</title>
+
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+
+    .ar-button {
+      background: #000;
+      color: #fff;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Guarda il panino in AR</h1>
+<p>Nessuna app. Funziona dal browser.</p>
+
+<model-viewer
+  src="panino.glb"
+  ar
+  ar-modes="scene-viewer quick-look"
+  camera-controls
+  auto-rotate>
+</model-viewer>
+
+<p>
+  <a class="ar-button" href="panino.glb">
+    📱 Vedi sul tavolo (AR)
+  </a>
+</p>
+
+</body>
+</html>
