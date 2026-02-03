@@ -1,52 +1,23 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Menu AR – Demo</title>
-
-  <!-- Google Model Viewer -->
+  <meta charset="UTF-8">
   <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
   </script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #111;
-      color: white;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 20px 0;
-    }
-
-    model-viewer {
-      width: 100%;
-      height: 70vh;
-      background: #000;
-    }
-  </style>
 </head>
 
-<body>
-
-<h1>🍔 Panino Demo AR</h1>
+<body style="margin:0">
 
 <model-viewer
-  src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-  camera-controls
+  src="models/panino.glb"
   ar
   ar-modes="scene-viewer quick-look"
-  shadow-intensity="1"
+  camera-controls
   auto-rotate
-  alt="Modello 3D AR">
+  style="width:100vw; height:100vh;">
 </model-viewer>
-
-<p>Tocca l’icona AR per vederlo sul tavolo</p>
 
 </body>
 </html>
+
