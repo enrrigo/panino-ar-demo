@@ -3,61 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panino in AR</title>
 
+  <title>Menu AR – Demo</title>
+
+  <!-- Google Model Viewer -->
   <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
   </script>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
       margin: 0;
-      padding: 20px;
-      background: #f4f4f4;
+      font-family: sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin: 20px 0;
     }
 
     model-viewer {
       width: 100%;
-      height: 400px;
-      margin-bottom: 20px;
-    }
-
-    .ar-button {
+      height: 70vh;
       background: #000;
-      color: #fff;
-      padding: 15px 25px;
-      font-size: 18px;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-block;
     }
   </style>
 </head>
 
 <body>
 
-<h1>Guarda il panino in AR</h1>
-<p>Nessuna app. Funziona dal browser.</p>
+<h1>🍔 Panino Demo AR</h1>
 
 <model-viewer
-  src="panino.glb"
+  src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+  camera-controls
   ar
   ar-modes="scene-viewer quick-look"
-  camera-controls
-  auto-rotate>
+  shadow-intensity="1"
+  auto-rotate
+  alt="Modello 3D AR">
 </model-viewer>
 
-<p>
-  <a class="ar-button" href="panino.usdz">
-    📱 Vedi sul tavolo (AR)
-  </a>
-</p>
+<p>Tocca l’icona AR per vederlo sul tavolo</p>
 
 </body>
 </html>
