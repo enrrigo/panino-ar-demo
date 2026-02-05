@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
 <meta charset="utf-8">
 
@@ -8,26 +8,49 @@
 </script>
 
 <style>
-body { margin:0; background:#000; }
-model-viewer { width:100vw; height:100vh; }
-a {
-  position:absolute;
-  top:10px;
-  left:10px;
-  background:white;
-  padding:10px;
-  text-decoration:none;
-  color:black;
-  border-radius:5px;
+body {
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+/* MODELLO */
+model-viewer {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* BARRA CONTROLLI */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  z-index: 10;
+}
+
+/* BOTTONI GRANDI */
+button, a {
+  background: white;
+  color: black;
+  font-size: 18px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<a href="index.html">← Torna al menù</a>
-
+<!-- MODELLO 3D -->
 <model-viewer
+  id="viewer"
   src="models/panino.glb"
   ar
   ar-modes="scene-viewer quick-look"
@@ -35,5 +58,14 @@ a {
   auto-rotate>
 </model-viewer>
 
+<!-- CONTROLLI -->
+<div class="controls">
+  <a href="index.html">⬅ Menu</a>
+  <button onclick="document.getElementById('viewer').activateAR()">
+    👀 Guarda in AR
+  </button>
+</div>
+
 </body>
 </html>
+
