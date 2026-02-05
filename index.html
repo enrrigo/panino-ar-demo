@@ -1,37 +1,127 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<title>Menù Panini</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Menu Nasty Boys</title>
 
 <style>
 body {
+  margin: 0;
+  background: #111;
+  color: white;
   font-family: sans-serif;
-  background:#111;
-  color:white;
-  text-align:center;
 }
-a {
-  display:block;
-  padding:15px;
-  margin:10px;
-  background:#222;
-  color:white;
-  text-decoration:none;
-  border-radius:8px;
+
+h1 {
+  text-align: center;
+  margin: 15px 0;
+}
+
+/* CONTENITORE 3 COLONNE */
+.menu {
+  display: flex;
+  height: 80vh;
+}
+
+/* COLONNA */
+.column {
+  flex: 1;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  perspective: 800px;
+  border-left: 1px solid #333;
+}
+
+/* VOCE */
+.item {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  scroll-snap-align: center;
+  transform-style: preserve-3d;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.4;
+}
+
+/* ELEMENTO CENTRALE */
+.item.active {
+  font-size: 28px;
+  opacity: 1;
+  transform: rotateX(0deg);
+  background: #222;
+}
+
+/* SPAZIO SOPRA/SOTTO */
+.spacer {
+  height: 50%;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🍔 Menù Panini</h1>
+<h1>🍔 Menù</h1>
 
-<a href="panino1.html">Panino Classico</a>
-<a href="panino2.html">Panino BBQ</a>
-<a href="panino3.html">Panino Veg</a>
-<a href="panino4.html">Panino Special</a>
-<a href="panino5.html">Panino Deluxe</a>
+<div class="menu">
+
+  <!-- PANINI -->
+  <div class="column">
+    <div class="spacer"></div>
+    <div class="item">Panino Classico</div>
+    <div class="item">Panino BBQ</div>
+    <div class="item">Panino Veg</div>
+    <div class="item">Panino Special</div>
+    <div class="item">Panino Deluxe</div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- PIADINE -->
+  <div class="column">
+    <div class="spacer"></div>
+    <div class="item">Piadina Crudo</div>
+    <div class="item">Piadina Veg</div>
+    <div class="item">Piadina Piccante</div>
+    <div class="item">Piadina Special</div>
+    <div class="item">Piadina XL</div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- HAMBURGER -->
+  <div class="column">
+    <div class="spacer"></div>
+    <div class="item">Hamburger Classic</div>
+    <div class="item">Hamburger Bacon</div>
+    <div class="item">Hamburger Smash</div>
+    <div class="item">Hamburger Veg</div>
+    <div class="item">Hamburger Double</div>
+    <div class="spacer"></div>
+  </div>
+
+</div>
+
+<script>
+const columns = document.querySelectorAll(".column");
+
+columns.forEach(col => {
+  col.addEventListener("scroll", () => {
+    const items = col.querySelectorAll(".item");
+    const center = col.scrollTop + col.clientHeight / 2;
+
+    items.forEach(item => {
+      const box = item.offsetTop + item.offsetHeight / 2;
+      if (Math.abs(center - box) < item.offsetHeight / 2) {
+        item.classList.add("active");
+      } else {
+        item.classList.remove("active");
+      }
+    });
+  });
+});
+</script>
 
 </body>
 </html>
