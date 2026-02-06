@@ -4,123 +4,172 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Menu Nasty Boys</title>
+<title>Menù AR Pub</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
 body {
   margin: 0;
-  background: #111;
+  background: #0e0e0e;
   color: white;
   font-family: sans-serif;
+  overflow: hidden;
 }
 
-h1 {
-  text-align: center;
-  margin: 15px 0;
-}
-
-/* CONTENITORE 3 COLONNE */
-.menu {
+/* ---------- SCHERMATA ENTRA ---------- */
+#start {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 10;
   display: flex;
-  height: 80vh;
-}
-
-/* COLONNA */
-.column {
-  flex: 1;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  perspective: 800px;
-  border-left: 1px solid #333;
-}
-
-/* VOCE */
-.item {
-  height: 80px;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+}
+
+#start button {
+  padding: 20px 40px;
+  font-size: 24px;
+  background: linear-gradient(145deg,#ffb347,#ff7e00);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+/* ---------- HEADER ---------- */
+header img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+/* ---------- MENU ---------- */
+.menu {
+  display: flex;
+  height: calc(100vh - 200px);
+}
+
+.column {
+  flex: 1;
+  margin: 5px;
+  background: linear-gradient(180deg,#222,#111);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.column h2 {
+  text-align: center;
+  margin: 10px 0;
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* ---------- SCROLLER ---------- */
+.list {
+  flex: 1;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.item {
   scroll-snap-align: center;
-  transform-style: preserve-3d;
-  transition: transform 0.2s, opacity 0.2s;
-  opacity: 0.4;
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+  background: linear-gradient(145deg,#333,#1a1a1a);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
 }
 
-/* ELEMENTO CENTRALE */
-.item.active {
-  font-size: 28px;
-  opacity: 1;
-  transform: rotateX(0deg);
-  background: #222;
-}
-
-/* SPAZIO SOPRA/SOTTO */
-.spacer {
-  height: 50%;
+/* ---------- NASCOSTO ---------- */
+model-viewer {
+  display: none;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🍔 Menù</h1>
+<!-- SCHERMATA INIZIALE -->
+<div id="start">
+  <button onclick="enter()">ENTRA</button>
+</div>
+
+<!-- SUONI -->
+<audio id="scrollSound" src="sounds/scroll.mp3"></audio>
+<audio id="clickSound" src="sounds/sparo.mp3"></audio>
+<audio id="exitSound" src="sounds/ricarica.mp3"></audio>
+
+<header>
+  <img src="images/intestazione.jpg">
+</header>
 
 <div class="menu">
 
-  <!-- PANINI -->
   <div class="column">
-    <div class="spacer"></div>
-    <div class="item">Panino Classico</div>
-    <div class="item">Panino BBQ</div>
-    <div class="item">Panino Veg</div>
-    <div class="item">Panino Special</div>
-    <div class="item">Panino Deluxe</div>
-    <div class="spacer"></div>
+    <h2>PANINI</h2>
+    <div class="list" onscroll="playScroll()">
+      <div class="item" onclick="openAR()">Classico</div>
+      <div class="item" onclick="openAR()">BBQ</div>
+      <div class="item" onclick="openAR()">Piccante</div>
+    </div>
   </div>
 
-  <!-- PIADINE -->
   <div class="column">
-    <div class="spacer"></div>
-    <div class="item">Piadina Crudo</div>
-    <div class="item">Piadina Veg</div>
-    <div class="item">Piadina Piccante</div>
-    <div class="item">Piadina Special</div>
-    <div class="item">Piadina XL</div>
-    <div class="spacer"></div>
+    <h2>PIADINE</h2>
+    <div class="list" onscroll="playScroll()">
+      <div class="item" onclick="openAR()">Crudo</div>
+      <div class="item" onclick="openAR()">Vegetale</div>
+    </div>
   </div>
 
-  <!-- HAMBURGER -->
   <div class="column">
-    <div class="spacer"></div>
-    <div class="item">Hamburger Classic</div>
-    <div class="item">Hamburger Bacon</div>
-    <div class="item">Hamburger Smash</div>
-    <div class="item">Hamburger Veg</div>
-    <div class="item">Hamburger Double</div>
-    <div class="spacer"></div>
+    <h2>HAMBURGER</h2>
+    <div class="list" onscroll="playScroll()">
+      <div class="item" onclick="openAR()">Cheese</div>
+      <div class="item" onclick="openAR()">Doppio</div>
+    </div>
   </div>
 
 </div>
 
+<model-viewer
+  id="ar"
+  src="models/panino.glb"
+  ar
+  ar-modes="scene-viewer quick-look">
+</model-viewer>
+
 <script>
-const columns = document.querySelectorAll(".column");
+let scrollTimer;
 
-columns.forEach(col => {
-  col.addEventListener("scroll", () => {
-    const items = col.querySelectorAll(".item");
-    const center = col.scrollTop + col.clientHeight / 2;
+function enter() {
+  document.getElementById("start").style.display = "none";
+}
 
-    items.forEach(item => {
-      const box = item.offsetTop + item.offsetHeight / 2;
-      if (Math.abs(center - box) < item.offsetHeight / 2) {
-        item.classList.add("active");
-      } else {
-        item.classList.remove("active");
-      }
-    });
-  });
-});
+function playScroll() {
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    document.getElementById("scrollSound").currentTime = 0;
+    document.getElementById("scrollSound").play();
+  }, 80);
+}
+
+function openAR() {
+  document.getElementById("clickSound").play();
+  document.getElementById("ar").activateAR();
+
+  document.getElementById("ar").addEventListener("ar-status", e => {
+    if (e.detail.status === "not-presenting") {
+      document.getElementById("exitSound").play();
+    }
+  }, { once:true });
+}
 </script>
 
 </body>
