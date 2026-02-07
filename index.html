@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Menù AR Pub</title>
@@ -10,71 +10,201 @@
 
 <style>
 body {
-  margin: 0;
-  background: #0e0e0e;
-  color: white;
-  font-family: sans-serif;
-  overflow: hidden;
+  margin:0;
+  background:#0b0b0b;
+  color:white;
+  font-family:system-ui;
 }
 
-/* ---------- SCHERMATA ENTRA ---------- */
+/* ---------- START ---------- */
 #start {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 #start button {
-  padding: 20px 40px;
-  font-size: 24px;
-  background: linear-gradient(145deg,#ffb347,#ff7e00);
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
+  font-size:26px;
+  padding:20px 50px;
+  border-radius:40px;
+  border:none;
+  background:linear-gradient(145deg,#ffb347,#ff7e00);
+  cursor:pointer;
 }
 
 /* ---------- HEADER ---------- */
 header img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  display:block;
 }
 
 /* ---------- MENU ---------- */
 .menu {
-  display: flex;
-  height: calc(100vh - 200px);
+  display:flex;
+  height:calc(100vh - 180px);
 }
 
 .column {
-  flex: 1;
-  margin: 5px;
-  background: linear-gradient(180deg,#222,#111);
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
+  flex:1;
+  margin:6px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#1f1f1f,#0e0e0e);
+  display:flex;
+  flex-direction:column;
 }
 
 .column h2 {
-  text-align: center;
-  margin: 10px 0;
-  background: rgba(255,255,255,0.1);
-  padding: 10px;
-  border-radius: 10px;
+  text-align:center;
+  margin:10px;
+  padding:10px;
+  background:rgba(255,255,255,0.08);
+  border-radius:12px;
 }
 
 /* ---------- SCROLLER ---------- */
 .list {
-  flex: 1;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
+  flex:1;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
 }
 
+.item {
+  scroll-snap-align:center;
+  margin:12px;
+  padding:18px;
+  background:linear-gradient(145deg,#2e2e2e,#161616);
+  border-radius:14px;
+  text-align:center;
+  cursor:pointer;
+  font-size:18px;
+}
+
+/* ---------- NASCOSTI ---------- */
+model-viewer { display:none; }
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<div id="start">
+  <button onclick="enter()">ENTRA</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="scrollSound" src="sounds/scroll.mp3"></audio>
+<audio id="clickSound" src="sounds/sparo.mp3"></audio>
+<audio id="exitSound" src="sounds/ricarica.mp3"></audio>
+
+<header>
+  <img src="images/intestazione.jpg">
+</header>
+
+<div class="menu">
+
+  <div class="column">
+    <h2>PANINI</h2>
+    <div class="list" onscroll="tic()">
+      <div class="item" onclick="openAR()">Classico</div>
+      <div class="item" onclick="openAR()">BBQ</div>
+      <div class="item" onclick="openAR()">Texas</div>
+      <div class="item" onclick="openAR()">Affumicato</div>
+      <div class="item" onclick="openAR()">Piccante</div>
+      <div class="item" onclick="openAR()">Crispy</div>
+      <div class="item" onclick="openAR()">Veg</div>
+      <div class="item" onclick="openAR()">Special</div>
+      <div class="item" onclick="openAR()">Extreme</div>
+      <div class="item" onclick="openAR()">Double</div>
+      <div class="item" onclick="openAR()">Triple</div>
+      <div class="item" onclick="openAR()">Monster</div>
+    </div>
+  </div>
+
+  <div class="column">
+    <h2>PIADINE</h2>
+    <div class="list" onscroll="tic()">
+      <div class="item" onclick="openAR()">Crudo</div>
+      <div class="item" onclick="openAR()">Porchetta</div>
+      <div class="item" onclick="openAR()">Vegetale</div>
+      <div class="item" onclick="openAR()">Formaggi</div>
+      <div class="item" onclick="openAR()">Speck</div>
+      <div class="item" onclick="openAR()">Bresaola</div>
+      <div class="item" onclick="openAR()">Mediterranea</div>
+      <div class="item" onclick="openAR()">Special</div>
+    </div>
+  </div>
+
+  <div class="column">
+    <h2>HAMBURGER</h2>
+    <div class="list" onscroll="tic()">
+      <div class="item" onclick="openAR()">Cheese</div>
+      <div class="item" onclick="openAR()">Doppio</div>
+      <div class="item" onclick="openAR()">Triplo</div>
+      <div class="item" onclick="openAR()">Bacon</div>
+      <div class="item" onclick="openAR()">BBQ</div>
+      <div class="item" onclick="openAR()">Smoked</div>
+      <div class="item" onclick="openAR()">Hot</div>
+      <div class="item" onclick="openAR()">Monster</div>
+    </div>
+  </div>
+
+</div>
+
+<model-viewer
+  id="ar"
+  src="models/panino.glb"
+  ar
+  ar-modes="scene-viewer quick-look">
+</model-viewer>
+
+<script>
+let audioUnlocked = false;
+let lastTick = 0;
+
+function enter() {
+  audioUnlocked = true;
+
+  const s = document.getElementById("scrollSound");
+  s.play();
+  s.pause();
+
+  document.getElementById("start").style.display = "none";
+}
+
+function tic() {
+  if (!audioUnlocked) return;
+
+  const now = Date.now();
+  if (now - lastTick > 120) {
+    const s = document.getElementById("scrollSound");
+    s.currentTime = 0;
+    s.play();
+    lastTick = now;
+  }
+}
+
+function openAR() {
+  document.getElementById("clickSound").play();
+  document.getElementById("ar").activateAR();
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && audioUnlocked) {
+    const r = document.getElementById("exitSound");
+    r.currentTime = 0;
+    r.play();
+  }
+});
+</script>
+
+</body>
+</html>
 .item {
   scroll-snap-align: center;
   padding: 20px;
