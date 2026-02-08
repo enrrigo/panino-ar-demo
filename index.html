@@ -17,7 +17,6 @@ html,body{
   color:#fff;
 }
 
-/* SFONDO FISSO */
 body::before{
   content:"";
   position:fixed;
@@ -27,7 +26,6 @@ body::before{
   z-index:-1;
 }
 
-/* START */
 #start{
   position:fixed;
   inset:0;
@@ -45,7 +43,6 @@ body::before{
   background:linear-gradient(145deg,#ffae42,#b86a00);
 }
 
-/* HEADER */
 header{
   padding:12px;
 }
@@ -58,15 +55,9 @@ header img{
   border-radius:14px;
 }
 
-/* CONTENITORE */
-.container{
-  padding:10px;
-}
+.container{padding:10px;}
 
-/* SEZIONE */
-.section{
-  margin-bottom:24px;
-}
+.section{margin-bottom:24px;}
 .section h2{
   margin:10px 0;
   padding:10px;
@@ -75,7 +66,6 @@ header img{
   text-align:center;
 }
 
-/* LISTA */
 .list{
   height:240px;
   overflow-y:scroll;
@@ -85,7 +75,16 @@ header img{
   -webkit-overflow-scrolling:touch;
 }
 
-/* ITEM */
+/* linea centrale invisibile */
+.list::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  height:1px;
+}
+
 .item{
   margin:14px;
   padding:18px;
@@ -95,7 +94,6 @@ header img{
   font-size:20px;
 }
 
-/* MODEL VIEWER */
 model-viewer{display:none;}
 </style>
 </head>
@@ -106,9 +104,9 @@ model-viewer{display:none;}
   <button onclick="enter()">ENTRA</button>
 </div>
 
-<audio id="scrollSound" src="sounds/scroll.mp3"></audio>
-<audio id="clickSound" src="sounds/sparo.mp3"></audio>
-<audio id="exitSound" src="sounds/ricarica.mp3"></audio>
+<audio id="tick" src="sounds/scroll.mp3"></audio>
+<audio id="click" src="sounds/sparo.mp3"></audio>
+<audio id="reload" src="sounds/ricarica.mp3"></audio>
 
 <header>
   <img src="images/intestazione.jpg" alt="Nasty Boys">
@@ -118,39 +116,38 @@ model-viewer{display:none;}
 
   <div class="section">
     <h2>PANINI</h2>
-    <div class="list" onscroll="tic(this)">
-      <div class="item" onclick="openAR()">Classico</div>
-      <div class="item" onclick="openAR()">BBQ</div>
-      <div class="item" onclick="openAR()">Texas</div>
-      <div class="item" onclick="openAR()">Crispy</div>
-      <div class="item" onclick="openAR()">Monster</div>
+    <div class="list">
+      <div class="item">Classico</div>
+      <div class="item">BBQ</div>
+      <div class="item">Texas</div>
+      <div class="item">Crispy</div>
+      <div class="item">Monster</div>
     </div>
   </div>
 
   <div class="section">
     <h2>PIADINE</h2>
-    <div class="list" onscroll="tic(this)">
-      <div class="item" onclick="openAR()">Crudo</div>
-      <div class="item" onclick="openAR()">Porchetta</div>
-      <div class="item" onclick="openAR()">Vegetale</div>
-      <div class="item" onclick="openAR()">Special</div>
+    <div class="list">
+      <div class="item">Crudo</div>
+      <div class="item">Porchetta</div>
+      <div class="item">Vegetale</div>
+      <div class="item">Special</div>
     </div>
   </div>
 
   <div class="section">
     <h2>HAMBURGER</h2>
-    <div class="list" onscroll="tic(this)">
-      <div class="item" onclick="openAR()">Cheese</div>
-      <div class="item" onclick="openAR()">Bacon</div>
-      <div class="item" onclick="openAR()">BBQ</div>
-      <div class="item" onclick="openAR()">Monster</div>
+    <div class="list">
+      <div class="item">Cheese</div>
+      <div class="item">Bacon</div>
+      <div class="item">BBQ</div>
+      <div class="item">Monster</div>
     </div>
   </div>
 
 </div>
 
-<model-viewer
-  id="ar"
+<model-viewer id="ar"
   src="models/panino.glb"
   ar
   ar-modes="scene-viewer quick-look">
@@ -159,33 +156,51 @@ model-viewer{display:none;}
 <script>
 let unlocked=false;
 let lastTick=0;
+let wasInAR=false;
 
 function enter(){
   unlocked=true;
-  const s=document.getElementById("scrollSound");
-  s.play(); s.pause();
+  document.getElementById("tick").play().pause();
   document.getElementById("start").style.display="none";
 }
 
-function tic(list){
-  if(!unlocked)return;
-  const now=Date.now();
-  if(now-lastTick>130){
-    const s=document.getElementById("scrollSound");
-    s.currentTime=0; s.play();
-    if(navigator.vibrate)navigator.vibrate(8);
-    lastTick=now;
-  }
-}
+/* SUONO ASTICELLA FISSA */
+document.querySelectorAll(".list").forEach(list=>{
+  list.addEventListener("scroll",()=>{
+    if(!unlocked)return;
 
-function openAR(){
-  document.getElementById("clickSound").play();
-  document.getElementById("ar").activateAR();
-}
+    const center=list.getBoundingClientRect().top + list.clientHeight/2;
+    const now=Date.now();
 
+    list.querySelectorAll(".item").forEach(item=>{
+      const r=item.getBoundingClientRect();
+      if(r.top<center && r.bottom>center){
+        if(now-lastTick>120){
+          const t=document.getElementById("tick");
+          t.currentTime=0;
+          t.play();
+          if(navigator.vibrate)navigator.vibrate(8);
+          lastTick=now;
+        }
+      }
+    });
+  });
+});
+
+/* CLICK IMMEDIATO */
+document.querySelectorAll(".item").forEach(item=>{
+  item.addEventListener("pointerdown",()=>{
+    document.getElementById("click").play();
+    wasInAR=true;
+    document.getElementById("ar").activateAR();
+  });
+});
+
+/* SUONO RICARICA AL RITORNO */
 document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="visible" && unlocked){
-    document.getElementById("exitSound").play();
+  if(document.visibilityState==="visible" && unlocked && wasInAR){
+    document.getElementById("reload").play();
+    wasInAR=false;
   }
 });
 </script>
