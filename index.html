@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menù AR Pub</title>
 
+<title>Menù AR – Nasty Boys</title>
+
+<!-- MODEL VIEWER -->
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
+<!-- FONT WESTERN -->
+<link href="https://fonts.googleapis.com/css2?family=Rye&display=swap" rel="stylesheet">
+
 <style>
-body {
+body{
   margin:0;
   background:#0b0b0b;
-  color:white;
-  font-family:system-ui;
+  color:#fff;
+  font-family:'Rye', cursive;
 }
 
-/* START BUTTON */
-#start {
+/* START */
+#start{
   position:fixed;
   inset:0;
   background:#000;
@@ -25,84 +30,82 @@ body {
   align-items:center;
   justify-content:center;
 }
-
-#start button {
+#start button{
   font-size:26px;
-  padding:20px 50px;
-  border-radius:40px;
+  padding:20px 60px;
   border:none;
-  background:linear-gradient(145deg,#ffb347,#ff7e00);
+  border-radius:50px;
+  background:linear-gradient(145deg,#ffae42,#b86a00);
   cursor:pointer;
 }
 
 /* HEADER */
-header img {
+header img{
   width:100%;
-  height:180px;
+  height:160px;
   object-fit:cover;
-  display:block;
 }
 
 /* MENU */
-.menu {
+.menu{
   display:flex;
-  height:calc(100vh - 180px);
-  padding:6px;
+  height:calc(100vh - 160px);
   gap:8px;
+  padding:6px;
 }
 
-.column {
+/* COLUMNS */
+.column{
   flex:1;
   border-radius:18px;
+  overflow:hidden;
   display:flex;
   flex-direction:column;
-  overflow:hidden;
 }
 
-/* COLORI COLONNE */
-.column.panini { background:linear-gradient(180deg,#3a2a00,#161100); }
-.column.piadine { background:linear-gradient(180deg,#3a1900,#160a00); }
-.column.hamburger { background:linear-gradient(180deg,#3a0000,#160000); }
+.panini{background:linear-gradient(180deg,#4a3300,#1b1300);}
+.piadine{background:linear-gradient(180deg,#5a2200,#1b0c00);}
+.hamburger{background:linear-gradient(180deg,#5a0000,#1b0000);}
 
-.column h2 {
+.column h2{
   text-align:center;
   margin:10px;
   padding:10px;
-  background:rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.12);
   border-radius:12px;
 }
 
-/* SCROLLER */
-.list {
+/* LIST */
+.list{
   flex:1;
   overflow-y:scroll;
   position:relative;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling:touch;
 }
 
-/* LINEA CENTRALE INVISIBILE */
-.list::after {
-  content:"";
+/* CENTER LINE (INVISIBLE) */
+.list::after{
+  content:'';
   position:absolute;
   top:50%;
   left:0;
   right:0;
-  height:2px;
-  transform:translateY(-1px);
+  height:1px;
   pointer-events:none;
 }
 
-.item {
+/* ITEM */
+.item{
   margin:14px;
   padding:18px;
-  background:linear-gradient(145deg,#2e2e2e,#161616);
+  background:linear-gradient(145deg,#2c2c2c,#141414);
   border-radius:14px;
   text-align:center;
   cursor:pointer;
   font-size:18px;
 }
 
-model-viewer { display:none; }
+model-viewer{display:none;}
 </style>
 </head>
 
@@ -118,12 +121,10 @@ model-viewer { display:none; }
 <audio id="clickSound" src="sounds/sparo.mp3"></audio>
 <audio id="exitSound" src="sounds/ricarica.mp3"></audio>
 
-<!-- HEADER -->
 <header>
   <img src="images/intestazione.jpg">
 </header>
 
-<!-- MENU -->
 <div class="menu">
 
   <div class="column panini">
@@ -132,13 +133,9 @@ model-viewer { display:none; }
       <div class="item" onclick="openAR()">Classico</div>
       <div class="item" onclick="openAR()">BBQ</div>
       <div class="item" onclick="openAR()">Texas</div>
-      <div class="item" onclick="openAR()">Affumicato</div>
-      <div class="item" onclick="openAR()">Piccante</div>
       <div class="item" onclick="openAR()">Crispy</div>
-      <div class="item" onclick="openAR()">Veg</div>
       <div class="item" onclick="openAR()">Monster</div>
       <div class="item" onclick="openAR()">Extreme</div>
-      <div class="item" onclick="openAR()">Double</div>
     </div>
   </div>
 
@@ -148,9 +145,6 @@ model-viewer { display:none; }
       <div class="item" onclick="openAR()">Crudo</div>
       <div class="item" onclick="openAR()">Porchetta</div>
       <div class="item" onclick="openAR()">Vegetale</div>
-      <div class="item" onclick="openAR()">Formaggi</div>
-      <div class="item" onclick="openAR()">Speck</div>
-      <div class="item" onclick="openAR()">Bresaola</div>
       <div class="item" onclick="openAR()">Special</div>
     </div>
   </div>
@@ -159,18 +153,14 @@ model-viewer { display:none; }
     <h2>HAMBURGER</h2>
     <div class="list" onscroll="checkCenter(this)">
       <div class="item" onclick="openAR()">Cheese</div>
-      <div class="item" onclick="openAR()">Doppio</div>
-      <div class="item" onclick="openAR()">Triplo</div>
       <div class="item" onclick="openAR()">Bacon</div>
       <div class="item" onclick="openAR()">BBQ</div>
-      <div class="item" onclick="openAR()">Smoked</div>
       <div class="item" onclick="openAR()">Monster</div>
     </div>
   </div>
 
 </div>
 
-<!-- MODELLO AR -->
 <model-viewer
   id="ar"
   src="models/panino.glb"
@@ -179,58 +169,57 @@ model-viewer { display:none; }
 </model-viewer>
 
 <script>
-let audioUnlocked = false;
-const lastIndex = new WeakMap();
+let audioUnlocked=false;
+const lastIndex=new WeakMap();
 
-function enter() {
-  audioUnlocked = true;
-  const s=document.getElementById("scrollSound"); s.play(); s.pause();
+function enter(){
+  audioUnlocked=true;
+
+  // Unlock audio
+  document.getElementById("scrollSound").play();
+  document.getElementById("scrollSound").pause();
   document.getElementById("start").style.display="none";
 
-  // Slot-machine effect iniziale
+  // SLOT EFFECT SOLO 0.5s
   document.querySelectorAll(".list").forEach(list=>{
-    let direction = Math.random()>0.5?1:-1;
-    let speed = Math.random()*2 + 1;
-    let maxScroll = list.scrollHeight - list.clientHeight;
-    let pos = Math.random()*maxScroll;
-    list.scrollTop = pos;
+    let start=list.scrollTop;
+    let end=start+60;
+    list.scrollTop=start;
 
-    let interval = setInterval(()=>{
-      if(!audioUnlocked) { clearInterval(interval); return; }
-      pos += speed*direction;
-      if(pos<0 || pos>maxScroll) direction*=-1;
-      list.scrollTop = pos;
-    },30);
+    let t0=performance.now();
+    function anim(t){
+      if(t-t0>500){list.scrollTop=start;return;}
+      list.scrollTop=start+(Math.sin((t-t0)/80)*10);
+      requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
   });
 }
 
-// Tic centrale con vibrazione
-function checkCenter(list) {
-  if (!audioUnlocked) return;
-
-  const items = list.querySelectorAll(".item");
-  const center = list.scrollTop + list.clientHeight / 2;
+function checkCenter(list){
+  if(!audioUnlocked)return;
+  const items=list.querySelectorAll(".item");
+  const center=list.scrollTop+list.clientHeight/2;
 
   items.forEach((item,i)=>{
-    const itemCenter = item.offsetTop + item.offsetHeight/2;
-    if(Math.abs(itemCenter - center) < 5){
+    const ic=item.offsetTop+item.offsetHeight/2;
+    if(Math.abs(ic-center)<6){
       if(lastIndex.get(list)!==i){
         lastIndex.set(list,i);
-        const s = document.getElementById("scrollSound");
+        const s=document.getElementById("scrollSound");
         s.currentTime=0; s.play();
-        if(navigator.vibrate) navigator.vibrate(10);
+        if(navigator.vibrate)navigator.vibrate(10);
       }
     }
   });
 }
 
-// AR e suoni
-function openAR() {
+function openAR(){
   document.getElementById("clickSound").play();
-  const ar = document.getElementById("ar");
+  const ar=document.getElementById("ar");
   ar.activateAR();
 
-  ar.addEventListener("ar-status", e=>{
+  ar.addEventListener("ar-status",e=>{
     if(e.detail.status==="not-presenting"){
       document.getElementById("exitSound").play();
     }
