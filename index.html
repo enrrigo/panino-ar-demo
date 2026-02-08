@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nasty Boys – Menu AR Slot 3D</title>
+<title>Nasty Boys – Menu AR Corretto</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -18,7 +18,7 @@ body {
   overflow-x:hidden;
 }
 
-/* ---------- START ---------- */
+/* START BUTTON */
 #start {
   position:fixed;
   inset:0;
@@ -38,7 +38,7 @@ body {
   cursor:pointer;
 }
 
-/* ---------- HEADER ---------- */
+/* HEADER */
 header {
   text-align:center;
   background:#3e2311;
@@ -50,7 +50,7 @@ header img {
   object-fit:contain;
 }
 
-/* ---------- MENU ---------- */
+/* MENU */
 .menu {
   display:flex;
   justify-content:center;
@@ -59,7 +59,7 @@ header img {
   padding:10px;
 }
 
-/* ---------- COLUMN ---------- */
+/* COLUMN */
 .column {
   flex:1;
   max-width:200px;
@@ -81,7 +81,7 @@ header img {
   text-align:center;
 }
 
-/* ---------- ROTELLE 3D ---------- */
+/* WHEEL ROTELLE */
 .wheel {
   flex:1;
   width:100%;
@@ -120,10 +120,10 @@ header img {
   transform: rotateX(0deg) scale(1);
 }
 
-/* ---------- MODELLO AR ---------- */
+/* MODELLO AR */
 model-viewer { display:none; }
 
-/* ---------- RESPONSIVE ---------- */
+/* RESPONSIVE */
 @media (max-width:768px){
   .menu{gap:6px;padding:6px;}
   .column{max-width:33vw;}
@@ -206,7 +206,7 @@ function enter() {
   document.getElementById("start").style.display="none";
 }
 
-// Aggiornamento rotelle 3D con effetto slot machine
+// Aggiornamento rotelle
 function updateWheel(wheel){
   if(!unlocked) return;
   const items = wheel.querySelectorAll(".item");
@@ -215,7 +215,6 @@ function updateWheel(wheel){
     const itemMidY = item.offsetTop + item.offsetHeight/2;
     const dist = itemMidY - centerY;
     item.classList.remove("center","far");
-    // Effetto 3D curvo
     const rotateX = dist/4;
     item.style.transform = `rotateX(${rotateX}deg) translateZ(-120px)`;
     if(Math.abs(dist)<item.offsetHeight/2){
@@ -232,16 +231,18 @@ function updateWheel(wheel){
 
 function openAR(){
   document.getElementById("clickSound").play();
-  document.getElementById("ar").activateAR();
+  const ar = document.getElementById("ar");
+  ar.activateAR();
+
+  // quando chiudi AR, ripristina rotelle e suono ricarica
+  ar.addEventListener("ar-status", e=>{
+    if(e.detail.status==="not-presenting"){
+      document.getElementById("exitSound").play();
+    }
+  },{once:true});
 }
 
-document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="visible" && unlocked){
-    document.getElementById("exitSound").play();
-  }
-});
-
-// TOUCH DRAG PER ROTELLE 3D SMOOTH
+// TOUCH DRAG PER ROTELLE
 document.querySelectorAll(".wheel").forEach(wheel=>{
   let startY=0;
   wheel.addEventListener("touchstart",e=>{
@@ -256,7 +257,7 @@ document.querySelectorAll(".wheel").forEach(wheel=>{
   });
 });
 
-// Inizializza rotelle
+// inizializza rotelle
 document.querySelectorAll(".wheel").forEach(updateWheel);
 </script>
 
