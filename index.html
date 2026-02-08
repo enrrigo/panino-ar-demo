@@ -139,3 +139,104 @@ model-viewer { display:none; }
       <div class="item" onclick="openAR()">Monster</div>
       <div class="item" onclick="openAR()">Extreme</div>
       <div class="item" onclick="openAR()">Double</div>
+    </div>
+  </div>
+
+  <div class="column piadine">
+    <h2>PIADINE</h2>
+    <div class="list" onscroll="checkCenter(this)">
+      <div class="item" onclick="openAR()">Crudo</div>
+      <div class="item" onclick="openAR()">Porchetta</div>
+      <div class="item" onclick="openAR()">Vegetale</div>
+      <div class="item" onclick="openAR()">Formaggi</div>
+      <div class="item" onclick="openAR()">Speck</div>
+      <div class="item" onclick="openAR()">Bresaola</div>
+      <div class="item" onclick="openAR()">Special</div>
+    </div>
+  </div>
+
+  <div class="column hamburger">
+    <h2>HAMBURGER</h2>
+    <div class="list" onscroll="checkCenter(this)">
+      <div class="item" onclick="openAR()">Cheese</div>
+      <div class="item" onclick="openAR()">Doppio</div>
+      <div class="item" onclick="openAR()">Triplo</div>
+      <div class="item" onclick="openAR()">Bacon</div>
+      <div class="item" onclick="openAR()">BBQ</div>
+      <div class="item" onclick="openAR()">Smoked</div>
+      <div class="item" onclick="openAR()">Monster</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODELLO AR -->
+<model-viewer
+  id="ar"
+  src="models/panino.glb"
+  ar
+  ar-modes="scene-viewer quick-look">
+</model-viewer>
+
+<script>
+let audioUnlocked = false;
+const lastIndex = new WeakMap();
+
+function enter() {
+  audioUnlocked = true;
+  const s=document.getElementById("scrollSound"); s.play(); s.pause();
+  document.getElementById("start").style.display="none";
+
+  // Slot-machine effect iniziale
+  document.querySelectorAll(".list").forEach(list=>{
+    let direction = Math.random()>0.5?1:-1;
+    let speed = Math.random()*2 + 1;
+    let maxScroll = list.scrollHeight - list.clientHeight;
+    let pos = Math.random()*maxScroll;
+    list.scrollTop = pos;
+
+    let interval = setInterval(()=>{
+      if(!audioUnlocked) { clearInterval(interval); return; }
+      pos += speed*direction;
+      if(pos<0 || pos>maxScroll) direction*=-1;
+      list.scrollTop = pos;
+    },30);
+  });
+}
+
+// Tic centrale con vibrazione
+function checkCenter(list) {
+  if (!audioUnlocked) return;
+
+  const items = list.querySelectorAll(".item");
+  const center = list.scrollTop + list.clientHeight / 2;
+
+  items.forEach((item,i)=>{
+    const itemCenter = item.offsetTop + item.offsetHeight/2;
+    if(Math.abs(itemCenter - center) < 5){
+      if(lastIndex.get(list)!==i){
+        lastIndex.set(list,i);
+        const s = document.getElementById("scrollSound");
+        s.currentTime=0; s.play();
+        if(navigator.vibrate) navigator.vibrate(10);
+      }
+    }
+  });
+}
+
+// AR e suoni
+function openAR() {
+  document.getElementById("clickSound").play();
+  const ar = document.getElementById("ar");
+  ar.activateAR();
+
+  ar.addEventListener("ar-status", e=>{
+    if(e.detail.status==="not-presenting"){
+      document.getElementById("exitSound").play();
+    }
+  },{once:true});
+}
+</script>
+
+</body>
+</html>
