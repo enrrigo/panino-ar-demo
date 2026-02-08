@@ -3,21 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Menù AR – Nasty Boys</title>
 
-<!-- MODEL VIEWER -->
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
-<!-- FONT WESTERN -->
 <link href="https://fonts.googleapis.com/css2?family=Rye&display=swap" rel="stylesheet">
 
 <style>
-body{
+html,body{
   margin:0;
-  background:#0b0b0b;
-  color:#fff;
+  padding:0;
+  height:100%;
   font-family:'Rye', cursive;
+  color:#fff;
+}
+
+/* SFONDO FISSO */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url("images/sfondo.jpg") center/cover no-repeat;
+  filter:brightness(0.35);
+  z-index:-1;
 }
 
 /* START */
@@ -25,73 +32,57 @@ body{
   position:fixed;
   inset:0;
   background:#000;
-  z-index:100;
   display:flex;
   align-items:center;
   justify-content:center;
+  z-index:100;
 }
 #start button{
   font-size:26px;
-  padding:20px 60px;
-  border:none;
+  padding:18px 60px;
   border-radius:50px;
+  border:none;
   background:linear-gradient(145deg,#ffae42,#b86a00);
-  cursor:pointer;
 }
 
 /* HEADER */
+header{
+  padding:12px;
+}
 header img{
   width:100%;
-  height:160px;
-  object-fit:cover;
+  max-height:160px;
+  object-fit:contain;
+  background:#111;
+  border:4px solid #b86a00;
+  border-radius:14px;
 }
 
-/* MENU */
-.menu{
-  display:flex;
-  height:calc(100vh - 160px);
-  gap:8px;
-  padding:6px;
-}
-
-/* COLUMNS */
-.column{
-  flex:1;
-  border-radius:18px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-
-.panini{background:linear-gradient(180deg,#4a3300,#1b1300);}
-.piadine{background:linear-gradient(180deg,#5a2200,#1b0c00);}
-.hamburger{background:linear-gradient(180deg,#5a0000,#1b0000);}
-
-.column h2{
-  text-align:center;
-  margin:10px;
+/* CONTENITORE */
+.container{
   padding:10px;
-  background:rgba(255,255,255,0.12);
-  border-radius:12px;
 }
 
-/* LIST */
+/* SEZIONE */
+.section{
+  margin-bottom:24px;
+}
+.section h2{
+  margin:10px 0;
+  padding:10px;
+  background:linear-gradient(90deg,#5a2a00,#2a1200);
+  border-radius:10px;
+  text-align:center;
+}
+
+/* LISTA */
 .list{
-  flex:1;
+  height:240px;
   overflow-y:scroll;
+  background:rgba(0,0,0,0.55);
+  border-radius:16px;
   position:relative;
   -webkit-overflow-scrolling:touch;
-}
-
-/* CENTER LINE (INVISIBLE) */
-.list::after{
-  content:'';
-  position:absolute;
-  top:50%;
-  left:0;
-  right:0;
-  height:1px;
-  pointer-events:none;
 }
 
 /* ITEM */
@@ -101,47 +92,44 @@ header img{
   background:linear-gradient(145deg,#2c2c2c,#141414);
   border-radius:14px;
   text-align:center;
-  cursor:pointer;
-  font-size:18px;
+  font-size:20px;
 }
 
+/* MODEL VIEWER */
 model-viewer{display:none;}
 </style>
 </head>
 
 <body>
 
-<!-- START -->
 <div id="start">
   <button onclick="enter()">ENTRA</button>
 </div>
 
-<!-- AUDIO -->
 <audio id="scrollSound" src="sounds/scroll.mp3"></audio>
 <audio id="clickSound" src="sounds/sparo.mp3"></audio>
 <audio id="exitSound" src="sounds/ricarica.mp3"></audio>
 
 <header>
-  <img src="images/intestazione.jpg">
+  <img src="images/intestazione.jpg" alt="Nasty Boys">
 </header>
 
-<div class="menu">
+<div class="container">
 
-  <div class="column panini">
+  <div class="section">
     <h2>PANINI</h2>
-    <div class="list" onscroll="checkCenter(this)">
+    <div class="list" onscroll="tic(this)">
       <div class="item" onclick="openAR()">Classico</div>
       <div class="item" onclick="openAR()">BBQ</div>
       <div class="item" onclick="openAR()">Texas</div>
       <div class="item" onclick="openAR()">Crispy</div>
       <div class="item" onclick="openAR()">Monster</div>
-      <div class="item" onclick="openAR()">Extreme</div>
     </div>
   </div>
 
-  <div class="column piadine">
+  <div class="section">
     <h2>PIADINE</h2>
-    <div class="list" onscroll="checkCenter(this)">
+    <div class="list" onscroll="tic(this)">
       <div class="item" onclick="openAR()">Crudo</div>
       <div class="item" onclick="openAR()">Porchetta</div>
       <div class="item" onclick="openAR()">Vegetale</div>
@@ -149,9 +137,9 @@ model-viewer{display:none;}
     </div>
   </div>
 
-  <div class="column hamburger">
+  <div class="section">
     <h2>HAMBURGER</h2>
-    <div class="list" onscroll="checkCenter(this)">
+    <div class="list" onscroll="tic(this)">
       <div class="item" onclick="openAR()">Cheese</div>
       <div class="item" onclick="openAR()">Bacon</div>
       <div class="item" onclick="openAR()">BBQ</div>
@@ -169,62 +157,37 @@ model-viewer{display:none;}
 </model-viewer>
 
 <script>
-let audioUnlocked=false;
-const lastIndex=new WeakMap();
+let unlocked=false;
+let lastTick=0;
 
 function enter(){
-  audioUnlocked=true;
-
-  // Unlock audio
-  document.getElementById("scrollSound").play();
-  document.getElementById("scrollSound").pause();
+  unlocked=true;
+  const s=document.getElementById("scrollSound");
+  s.play(); s.pause();
   document.getElementById("start").style.display="none";
-
-  // SLOT EFFECT SOLO 0.5s
-  document.querySelectorAll(".list").forEach(list=>{
-    let start=list.scrollTop;
-    let end=start+60;
-    list.scrollTop=start;
-
-    let t0=performance.now();
-    function anim(t){
-      if(t-t0>500){list.scrollTop=start;return;}
-      list.scrollTop=start+(Math.sin((t-t0)/80)*10);
-      requestAnimationFrame(anim);
-    }
-    requestAnimationFrame(anim);
-  });
 }
 
-function checkCenter(list){
-  if(!audioUnlocked)return;
-  const items=list.querySelectorAll(".item");
-  const center=list.scrollTop+list.clientHeight/2;
-
-  items.forEach((item,i)=>{
-    const ic=item.offsetTop+item.offsetHeight/2;
-    if(Math.abs(ic-center)<6){
-      if(lastIndex.get(list)!==i){
-        lastIndex.set(list,i);
-        const s=document.getElementById("scrollSound");
-        s.currentTime=0; s.play();
-        if(navigator.vibrate)navigator.vibrate(10);
-      }
-    }
-  });
+function tic(list){
+  if(!unlocked)return;
+  const now=Date.now();
+  if(now-lastTick>130){
+    const s=document.getElementById("scrollSound");
+    s.currentTime=0; s.play();
+    if(navigator.vibrate)navigator.vibrate(8);
+    lastTick=now;
+  }
 }
 
 function openAR(){
   document.getElementById("clickSound").play();
-  const ar=document.getElementById("ar");
-  ar.activateAR();
-
-  ar.addEventListener("ar-status",e=>{
-    if(e.detail.status==="not-presenting"){
-      document.getElementById("exitSound").play();
-    }
-  },{once:true});
+  document.getElementById("ar").activateAR();
 }
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible" && unlocked){
+    document.getElementById("exitSound").play();
+  }
+});
 </script>
 
 </body>
